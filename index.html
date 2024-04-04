@@ -1,227 +1,262 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>ARTS IIIE Message Practice</title>
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <meta name="generator" content="Geany 0.20" />
+        <style type="text/css">
+            body {
+                background: url('cream_radar_img.png') no-repeat;
+                background-size: 100%;
+                background-color: #000000;
+                color: #77ff33;
+                font-family: arial, verdana, serif;
+            }
 
-<head>
-	<title>ARTS IIIE Message Practice</title>
-	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<meta name="generator" content="Geany 0.20" />
-	<style type="text/css">
-	body {
-		background: url("cream_radar_img.png") no-repeat;
-		background-size: 100%;
-		background-color: #000000;
-		color: #77ff33;
-		font-family: arial, verdana, serif;
-	}
-	
-	#outputBox {
-		position: fixed;
-		bottom: 180px;
-		left: 30px;
-		
-		width: 350px;
-		height: 200px;
-		padding: 10px;
-		color: #FF0000;
-	}
+            #outputBox {
+                position: fixed;
+                bottom: 180px;
+                left: 30px;
 
-	#inputBox {
-		position: fixed;
-		bottom: 10px;
-		left: 30px;
+                width: 350px;
+                height: 200px;
+                padding: 10px;
+                color: #ff0000;
+            }
 
-		width: 350px;
-		height: 150px;
-		padding: 10px;
-	}
-	
-	#footer {
-		position: fixed;
-		bottom: 0px;
-		right: 5px;
-	}
-	</style>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-	<script>
-	//Set page screen size (runs on load):
-	function changeScreenSize(w, h) {
-		window.resizeTo(w, h);
-	}
-		
-	// create array objects to stor user input and display user's past input (outputArray)
-	var inputArray = new Array();
-	var outputArray = new Array(); 
-	var alpha = new Array();
-	// number row
-	alpha[48] = '0'; alpha[49] = "1"; alpha[50] = "2"; alpha[51] = "3";
-	alpha[52] = "4"; alpha[53] = "5"; alpha[54] = "6"; alpha[55] = "7";
-	alpha[56] = "8"; alpha[57] = "9";
-	// keypad
-	alpha[96] = '0'; alpha[97] = "1"; alpha[98] = "2"; alpha[99] = "3";
-	alpha[100] = "4"; alpha[101] = "5"; alpha[102] = "6"; alpha[103] = "7";
-	alpha[104] = "8"; alpha[105] = "9";
-	// non-function alphabet (all but M, H, and Y)
-	alpha[65] = "A"; alpha[66] = "B"; alpha[67] = "C"; alpha[68] = "D";
-	alpha[69] = "E"; alpha[70] = "F"; alpha[71] = "G"; alpha[73] = "I";
-	alpha[74] = "J"; alpha[75] = "K"; alpha[76] = "L"; alpha[78] = "N";
-	alpha[79] = "O"; alpha[80] = "P"; alpha[81] = "Q"; alpha[82] = "R";
-	alpha[83] = "S"; alpha[84] = "T"; alpha[85] = "U"; alpha[86] = "V";
-	alpha[87] = "W"; alpha[88] = "X"; alpha[90] = "Z";
-	// special chars
-	alpha[191] = "/";
-			
-	$(document).ready(function() {
-		$('#textbox').focus();
-		$('#textbox').keydown(function(e) {
-			var keyCode = e.keyCode || e.which;
-			
-			if (alpha[keyCode] != null) {
-				inputArray.push(alpha[keyCode]);
-			}
-			
-			// Tab
-			if (keyCode == 9) { 
-				e.preventDefault(); 
-				// Add Delta symbol to inputArray = mapped to Tab
-				inputArray.push('&Delta;');
- 			}
- 			
- 			// Backspace
- 			if (keyCode == 8) { 
-				e.preventDefault(); 
-				// Remove last character from inputArray = mapped to Backspace
-				inputArray.pop();
- 			}
- 			
- 			// Spacebar
- 			if (keyCode == 32) { 
-				e.preventDefault(); 
-				// Enters line break into inputArray = mapped to Spacebar
-				inputArray.push('<BR />');
- 			}
- 			
- 			// Splat * 
- 			if (keyCode == 106) { 
-				e.preventDefault(); 
-				// Appends a * to the display = mapped to *
-				inputArray.push('*');
- 			}
- 			
- 			// IFR (+)
- 			if (keyCode == 107) { 
-				e.preventDefault(); 
-				// Appends a + to the display = mapped to +
-				inputArray.push('+');
- 			}
- 			
- 			// ( . )
- 			if (keyCode == 187) { 
-				e.preventDefault(); 
-				// Appends a . to the display = mapped to "="
-				inputArray.push('.');
- 			}
- 			
- 			// CLEAR
- 			if (keyCode == 27) { 
-				e.preventDefault(); 
-				// Clears message input area:
-				clearMessage();
- 			}
- 			
- 			// MULTI FUNC ( F7 )
- 			if (keyCode == 118) { 
-				e.preventDefault(); 
-				// Clear Window & display multi-function "F" = mapped to F7
-				clearMessage();
-				
-				inputArray.push('<multi>F');
- 			}
- 			
- 			// TERM CNTL (F4)
- 			if (keyCode == 115) { 
-				e.preventDefault(); 
-				// Clear Window & display Terminate Control "TC" 
-				// followed by a newline. = mapped to F4
-				clearMessage();
-				
-				inputArray.push('<multi>TC</multi><BR />');
- 			}
- 			// M
- 			if (keyCode == 77) {
-				// the .slice() is necessary to make a clone rather than a reference
-				var testArray = inputArray.slice();
-				if (testArray.pop() == '<multi>F') {
-					// FM followed by newline = F7 + M
-					inputArray.push('M</multi><BR />');
-				} else {
-					inputArray.push("M");
-				}
- 			}
- 			
- 			// H
- 			if (keyCode == 72) {
-				// the .slice() is necessary to make a clone rather than a reference
-				var testArray = inputArray.slice();
-				if (testArray.pop() == '<multi>F') {
-					// FH followed by newline = F7 + H
-					inputArray.push('H</multi><BR />');
-				} else {
-					inputArray.push("H");
-				}
- 			}
- 			
- 			// Y
- 			if (keyCode == 89) {
-				// the .slice() is necessary to make a clone rather than a reference
-				var testArray = inputArray.slice();
-				if (testArray.pop() == '<multi>F') {
-					// FY followed by newline = F7 + Y
-					inputArray.push('Y</multi><BR />');
-				} else {
-					inputArray.push("Y");
-				}
- 			}
- 			
- 			// Enter
- 			if (keyCode == 13) { 
-				e.preventDefault(); 
-				// the .slice() is necessary to make a clone rather than a reference
-				outputArray = inputArray.slice();
-				// Clear input text area:
-				clearMessage();		
-				// diplay text enter via the outputBox div:
-				if (outputArray.length < 1) {
-					$('#outputBox').html("");
-				} else {
-					$('#outputBox').html("<span style=\" color: #FFFFFF; \">You entered:</span><br />" + outputArray.join(""));				
-				}
- 			}
+            #inputBox {
+                position: fixed;
+                bottom: 10px;
+                left: 30px;
 
- 			//Display User input thus far:
- 			$('#inputBox').html(inputArray.join("")); 
-		});
-	});
-	
-	function clearMessage() {
-		inputArray = [];
-	}
-		
-	</script>
-</head>
+                width: 350px;
+                height: 150px;
+                padding: 10px;
+            }
 
-<body onload="changeScreenSize(1050,975)">
-	<H2> ARTS IIIE Message Practice App</H2>
-	
-	<div id="outputBox"></div>
-		
-	<div id="inputBox"></div>
-	
-	<div id="footer">	
-		<input type="text" id="textbox" style="width: 10px; color: #FFFFFF;" autofocus="autofocus" /> &lt;&lt; Click here if no response.
-		<p>&oplus; App developed by Joshua Wedekind</p>
-	</div>
+            #footer {
+                position: fixed;
+                bottom: 0px;
+                right: 5px;
+            }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script>
+            //Set page screen size (runs on load):
+            function changeScreenSize(w, h) {
+                window.resizeTo(w, h);
+            }
 
-</body>
+            // create array objects to stor user input and display user's past input (outputArray)
+            var inputArray = new Array();
+            var outputArray = new Array();
+            var alpha = new Array();
+            // number row
+            alpha[48] = '0';
+            alpha[49] = '1';
+            alpha[50] = '2';
+            alpha[51] = '3';
+            alpha[52] = '4';
+            alpha[53] = '5';
+            alpha[54] = '6';
+            alpha[55] = '7';
+            alpha[56] = '8';
+            alpha[57] = '9';
+            // keypad
+            alpha[96] = '0';
+            alpha[97] = '1';
+            alpha[98] = '2';
+            alpha[99] = '3';
+            alpha[100] = '4';
+            alpha[101] = '5';
+            alpha[102] = '6';
+            alpha[103] = '7';
+            alpha[104] = '8';
+            alpha[105] = '9';
+            // non-function alphabet (all but M, H, and Y)
+            alpha[65] = 'A';
+            alpha[66] = 'B';
+            alpha[67] = 'C';
+            alpha[68] = 'D';
+            alpha[69] = 'E';
+            alpha[70] = 'F';
+            alpha[71] = 'G';
+            alpha[73] = 'I';
+            alpha[74] = 'J';
+            alpha[75] = 'K';
+            alpha[76] = 'L';
+            alpha[78] = 'N';
+            alpha[79] = 'O';
+            alpha[80] = 'P';
+            alpha[81] = 'Q';
+            alpha[82] = 'R';
+            alpha[83] = 'S';
+            alpha[84] = 'T';
+            alpha[85] = 'U';
+            alpha[86] = 'V';
+            alpha[87] = 'W';
+            alpha[88] = 'X';
+            alpha[90] = 'Z';
+            // special chars
+            alpha[191] = '/';
 
+            $(document).ready(function () {
+                $('#textbox').focus();
+                $('#textbox').keydown(function (e) {
+                    var keyCode = e.keyCode || e.which;
+
+                    if (alpha[keyCode] != null) {
+                        inputArray.push(alpha[keyCode]);
+                    }
+
+                    // Tab
+                    if (keyCode == 9) {
+                        e.preventDefault();
+                        // Add Delta symbol to inputArray = mapped to Tab
+                        inputArray.push('&Delta;');
+                    }
+
+                    // Backspace
+                    if (keyCode == 8) {
+                        e.preventDefault();
+                        // Remove last character from inputArray = mapped to Backspace
+                        inputArray.pop();
+                    }
+
+                    // Spacebar
+                    if (keyCode == 32) {
+                        e.preventDefault();
+                        // Enters line break into inputArray = mapped to Spacebar
+                        inputArray.push('<BR />');
+                    }
+
+                    // Splat *
+                    if (keyCode == 106) {
+                        e.preventDefault();
+                        // Appends a * to the display = mapped to *
+                        inputArray.push('*');
+                    }
+
+                    // IFR (+)
+                    if (keyCode == 107) {
+                        e.preventDefault();
+                        // Appends a + to the display = mapped to +
+                        inputArray.push('+');
+                    }
+
+                    // ( . )
+                    if (keyCode == 187) {
+                        e.preventDefault();
+                        // Appends a . to the display = mapped to "="
+                        inputArray.push('.');
+                    }
+
+                    // CLEAR
+                    if (keyCode == 27) {
+                        e.preventDefault();
+                        // Clears message input area:
+                        clearMessage();
+                    }
+
+                    // MULTI FUNC ( F7 )
+                    if (keyCode == 118) {
+                        e.preventDefault();
+                        // Clear Window & display multi-function "F" = mapped to F7
+                        clearMessage();
+
+                        inputArray.push('<multi>F');
+                    }
+
+                    // TERM CNTL (F4)
+                    if (keyCode == 115) {
+                        e.preventDefault();
+                        // Clear Window & display Terminate Control "TC"
+                        // followed by a newline. = mapped to F4
+                        clearMessage();
+
+                        inputArray.push('<multi>TC</multi><BR />');
+                    }
+                    // M
+                    if (keyCode == 77) {
+                        // the .slice() is necessary to make a clone rather than a reference
+                        var testArray = inputArray.slice();
+                        if (testArray.pop() == '<multi>F') {
+                            // FM followed by newline = F7 + M
+                            inputArray.push('M</multi><BR />');
+                        } else {
+                            inputArray.push('M');
+                        }
+                    }
+
+                    // H
+                    if (keyCode == 72) {
+                        // the .slice() is necessary to make a clone rather than a reference
+                        var testArray = inputArray.slice();
+                        if (testArray.pop() == '<multi>F') {
+                            // FH followed by newline = F7 + H
+                            inputArray.push('H</multi><BR />');
+                        } else {
+                            inputArray.push('H');
+                        }
+                    }
+
+                    // Y
+                    if (keyCode == 89) {
+                        // the .slice() is necessary to make a clone rather than a reference
+                        var testArray = inputArray.slice();
+                        if (testArray.pop() == '<multi>F') {
+                            // FY followed by newline = F7 + Y
+                            inputArray.push('Y</multi><BR />');
+                        } else {
+                            inputArray.push('Y');
+                        }
+                    }
+
+                    // Enter
+                    if (keyCode == 13) {
+                        e.preventDefault();
+                        // the .slice() is necessary to make a clone rather than a reference
+                        outputArray = inputArray.slice();
+                        // Clear input text area:
+                        clearMessage();
+                        // diplay text enter via the outputBox div:
+                        if (outputArray.length < 1) {
+                            $('#outputBox').html('');
+                        } else {
+                            $('#outputBox').html(
+                                '<span style=" color: #FFFFFF; ">You entered:</span><br />' +
+                                    outputArray.join('')
+                            );
+                        }
+                    }
+
+                    //Display User input thus far:
+                    $('#inputBox').html(inputArray.join(''));
+                });
+            });
+
+            function clearMessage() {
+                inputArray = [];
+            }
+        </script>
+    </head>
+
+    <body onload="changeScreenSize(1050,975)">
+        <h2>ARTS IIIE Message Practice App</h2>
+
+        <div id="outputBox"></div>
+
+        <div id="inputBox"></div>
+
+        <div id="footer">
+            <input
+                type="text"
+                id="textbox"
+                style="width: 10px; color: #ffffff"
+                autofocus="autofocus"
+            />
+            &lt;&lt; Click here if no response.
+            <p>&oplus; App developed by Joshua Wedekind</p>
+        </div>
+    </body>
 </html>
