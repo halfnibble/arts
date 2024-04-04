@@ -2,7 +2,7 @@
 
 For FAA ATC training purposes only
 
-Maintained as a favor for friends in the FAA ♥️
+Maintained as a favor to friends in the FAA ♥️
 
 Deployed to: https://halfnibble.github.io/arts/
 
